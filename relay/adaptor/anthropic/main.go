@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
 	"strings"
@@ -14,6 +13,7 @@ import (
 	"github.com/songquanpeng/one-api/common/helper"
 	"github.com/songquanpeng/one-api/common/image"
 	"github.com/songquanpeng/one-api/common/logger"
+	"github.com/songquanpeng/one-api/common/render"
 	"github.com/songquanpeng/one-api/relay/adaptor/openai"
 	"github.com/songquanpeng/one-api/relay/model"
 )
@@ -36,18 +36,19 @@ func stopReasonClaude2OpenAI(reason *string) string {
 	}
 }
 
+// https://docs.anthropic.com/en/docs/build-with-claude/tool-use
 func ConvertRequest(textRequest model.GeneralOpenAIRequest) *Request {
 	claudeTools := make([]Tool, 0, len(textRequest.Tools))
 
 	for _, tool := range textRequest.Tools {
-		if params, ok := tool.Function.Parameters.(map[string]any); ok {
+		if tool.Function.Parameters != nil {
 			claudeTools = append(claudeTools, Tool{
 				Name:        tool.Function.Name,
 				Description: tool.Function.Description,
 				InputSchema: InputSchema{
-					Type:       params["type"].(string),
-					Properties: params["properties"],
-					Required:   params["required"],
+					Type:       tool.Function.Parameters.Type,
+					Properties: tool.Function.Parameters.Properties,
+					Required:   tool.Function.Parameters.Required,
 				},
 			})
 		}

@@ -24,11 +24,10 @@ const (
 	dataPrefixLength = len(dataPrefix)
 )
 
-func StreamHandler(c *gin.Context, resp *http.Response, relayMode int) (*model.ErrorWithStatusCode, string, *model.Usage) {
-	responseText := ""
+func StreamHandler(c *gin.Context, resp *http.Response, relayMode int) (
+	wrappedErr *model.ErrorWithStatusCode, responseText string, usage *model.Usage) {
 	scanner := bufio.NewScanner(resp.Body)
 	scanner.Split(bufio.ScanLines)
-	var usage *model.Usage
 
 	common.SetEventStreamHeaders(c)
 

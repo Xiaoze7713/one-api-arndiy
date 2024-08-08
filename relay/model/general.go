@@ -21,7 +21,7 @@ type GeneralOpenAIRequest struct {
 	Tools            []Tool          `json:"tools,omitempty"`
 	ToolChoice       any             `json:"tool_choice,omitempty"`
 	FunctionCall     any             `json:"function_call,omitempty"`
-	Functions        any             `json:"functions,omitempty"`
+	Functions        []Function      `json:"functions,omitempty"`
 	User             string          `json:"user,omitempty"`
 	Prompt           any             `json:"prompt,omitempty"`
 	Input            any             `json:"input,omitempty"`

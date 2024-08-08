@@ -1,16 +1,19 @@
 package openai
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
+	"strings"
+
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/image"
 	"github.com/songquanpeng/one-api/common/logger"
 	billingratio "github.com/songquanpeng/one-api/relay/billing/ratio"
 	"github.com/songquanpeng/one-api/relay/model"
-	"math"
-	"strings"
+	"gorm.io/gorm/utils"
 )
 
 // tokenEncoderMap won't grow after initialization
@@ -86,9 +89,15 @@ func CountTokenMessages(messages []model.Message, model string) int {
 		tokensPerMessage = 3
 		tokensPerName = 1
 	}
+
 	tokenNum := 0
 	for _, message := range messages {
 		tokenNum += tokensPerMessage
+
+		for _, tool := range message.ToolCalls {
+			tokenNum += countTokenFunctionCall(tool.Function, model)
+		}
+
 		switch v := message.Content.(type) {
 		case string:
 			tokenNum += getTokenNum(tokenEncoder, v)
@@ -128,6 +137,74 @@ func CountTokenMessages(messages []model.Message, model string) int {
 	}
 	tokenNum += 3 // Every reply is primed with <|start|>assistant<|message|>
 	return tokenNum
+}
+
+func countTokenFunctionCall(functionCall any, model string) int {
+	tokenEncoder := getTokenEncoder(model)
+	jsonBytes, err := json.Marshal(functionCall)
+	if err != nil {
+		return 0
+	}
+	return getTokenNum(tokenEncoder, string(jsonBytes))
+}
+
+// countTokenFunctions counts the number of tokens in the function definitions.
+//
+// Returns the number of tokens in the function definitions.
+func countTokenFunctions(functions []model.Function, modelName string) int {
+	// https://community.openai.com/t/how-to-know-of-tokens-beforehand-when-i-make-function-calling-chat-history-request-witn-nodejs/289060/6
+	if len(functions) == 0 {
+		return 0
+	}
+	tokenEncoder := getTokenEncoder(modelName)
+
+	paramSignature := func(name string, pSpec model.Property, pRequired []string) string {
+		var requiredString string
+		if utils.Contains(pRequired, name) == false {
+			requiredString = "?"
+		}
+		var enumString string
+		if len(pSpec.Enum) > 0 {
+			enumValues := make([]string, len(pSpec.Enum))
+			for i, v := range pSpec.Enum {
+				enumValues[i] = fmt.Sprintf("\"%s\"", v)
+			}
+			enumString = strings.Join(enumValues, " | ")
+		} else {
+			enumString = pSpec.Type
+		}
+		signature := fmt.Sprintf("%s%s: %s, ", name, requiredString, enumString)
+		if pSpec.Description != "" {
+			signature = fmt.Sprintf("// %s\n%s", pSpec.Description, signature)
+		}
+		return signature
+	}
+
+	functionSignature := func(fSpec model.Function) string {
+		var params []string
+		for name, p := range fSpec.Parameters.Properties {
+			params = append(params, paramSignature(name, p, fSpec.Parameters.Required))
+		}
+		var descriptionString string
+		if fSpec.Description != "" {
+			descriptionString = fmt.Sprintf("// %s\n", fSpec.Description)
+		}
+
+		var paramString string
+		if len(params) > 0 {
+			paramString = fmt.Sprintf("_: {\n%s\n}", strings.Join(params, "\n"))
+		}
+
+		return fmt.Sprintf("%stype %s = (%s) => any;", descriptionString, fSpec.Name, paramString)
+	}
+
+	var functionSignatures []string
+	for _, f := range functions {
+		functionSignatures = append(functionSignatures, functionSignature(f))
+	}
+	functionString := fmt.Sprintf("# Tools\n\n## functions\n\nnamespace functions {\n\n%s\n\n} // namespace functions", strings.Join(functionSignatures, "\n\n"))
+
+	return getTokenNum(tokenEncoder, functionString)
 }
 
 const (
