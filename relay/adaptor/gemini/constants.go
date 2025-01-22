@@ -37,17 +37,18 @@ var gemini15Flash8bRatio = ratio.Ratio{
 // https://ai.google.dev/gemini-api/docs/models/gemini
 // https://cloud.google.com/vertex-ai/generative-ai/pricing?hl=zh-cn#google_models
 var RatioMap = map[string]ratio.Ratio{
-	"gemini-2.0-flash-exp":          {Input: 0.1, Output: 0.1}, // currently free of charge
-	"gemini-2.0-flash-thinking-exp": {Input: 0.1, Output: 0.1}, // currently free of charge
-	"gemini-1.5-flash":              gemini15FlashRatio,
-	"gemini-1.5-flash-001":          gemini15FlashRatio,
-	"gemini-1.5-flash-002":          gemini15FlashRatio,
-	"gemini-1.5-pro":                gemini15ProRatio,
-	"gemini-1.5-pro-001":            gemini15ProRatio,
-	"gemini-1.5-pro-002":            gemini15ProRatio,
-	"gemini-1.0-pro":                gemini10ProRatio,
-	"gemini-1.0-pro-001":            gemini10ProRatio,
-	"gemini-1.5-flash-8b":           gemini15Flash8bRatio,
-	"gemini-1.5-flash-8b-001":       gemini15Flash8bRatio,
-	"text-embedding-004":            {Input: 0.1, Output: 0.1}, // free of charge
+	"gemini-2.0-flash-exp":                {Input: 0.1, Output: 0.1}, // currently free of charge
+	"gemini-2.0-flash-thinking-exp":       {Input: 0.1, Output: 0.1}, // currently free of charge
+	"gemini-2.0-flash-thinking-exp-01-21": {Input: 0.1, Output: 0.1}, // currently free of charge
+	"gemini-1.5-flash":                    gemini15FlashRatio,
+	"gemini-1.5-flash-001":                gemini15FlashRatio,
+	"gemini-1.5-flash-002":                gemini15FlashRatio,
+	"gemini-1.5-pro":                      gemini15ProRatio,
+	"gemini-1.5-pro-001":                  gemini15ProRatio,
+	"gemini-1.5-pro-002":                  gemini15ProRatio,
+	"gemini-1.0-pro":                      gemini10ProRatio,
+	"gemini-1.0-pro-001":                  gemini10ProRatio,
+	"gemini-1.5-flash-8b":                 gemini15Flash8bRatio,
+	"gemini-1.5-flash-8b-001":             gemini15Flash8bRatio,
+	"text-embedding-004":                  {Input: 0.1, Output: 0.1}, // free of charge
 }

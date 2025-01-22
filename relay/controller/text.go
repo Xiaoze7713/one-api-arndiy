@@ -2,27 +2,29 @@ package controller
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/songquanpeng/one-api/common/config"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/songquanpeng/one-api/common/config"
+	"github.com/songquanpeng/one-api/common/ctxkey"
 	"github.com/songquanpeng/one-api/common/logger"
+	"github.com/songquanpeng/one-api/model"
 	"github.com/songquanpeng/one-api/relay"
 	"github.com/songquanpeng/one-api/relay/adaptor"
 	"github.com/songquanpeng/one-api/relay/adaptor/openai"
 	"github.com/songquanpeng/one-api/relay/apitype"
 	"github.com/songquanpeng/one-api/relay/billing"
-	billingratio "github.com/songquanpeng/one-api/relay/billing/ratio"
 	"github.com/songquanpeng/one-api/relay/channeltype"
 	"github.com/songquanpeng/one-api/relay/meta"
-	"github.com/songquanpeng/one-api/relay/model"
+	relaymodel "github.com/songquanpeng/one-api/relay/model"
 )
 
-func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
+func RelayTextHelper(c *gin.Context) *relaymodel.ErrorWithStatusCode {
 	ctx := c.Request.Context()
 	meta := meta.GetByContext(c)
 	// get & validate textRequest
@@ -46,14 +48,15 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	// set system prompt if not empty
 	systemPromptReset := setSystemPrompt(ctx, textRequest, meta.SystemPrompt)
 	// get model ratio & group ratio
-	groupRatio := billingratio.GetGroupRatio(meta.Group)
+	// groupRatio := billingratio.GetGroupRatio(meta.Group)
+	groupRatio := c.GetFloat64(ctxkey.ChannelRatio)
 	adaptorRatio := GetRatio(meta, adaptor)
 	ratio := adaptorRatio.Input * groupRatio
 
 	// pre-consume quota
-	promptTokens := getPromptTokens(textRequest, meta.Mode)
+	promptTokens := getPromptTokens(c.Request.Context(), textRequest, meta.Mode)
 	meta.PromptTokens = promptTokens
-	preConsumedQuota, bizErr := preConsumeQuota(ctx, textRequest, promptTokens, ratio, meta)
+	preConsumedQuota, bizErr := preConsumeQuota(c, textRequest, promptTokens, ratio, meta)
 	if bizErr != nil {
 		logger.Warnf(ctx, "preConsumeQuota failed: %+v", *bizErr)
 		return bizErr
@@ -64,6 +67,10 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 	if err != nil {
 		return openai.ErrorWrapper(err, "convert_request_failed", http.StatusInternalServerError)
 	}
+
+	// for debug
+	requestBodyBytes, _ := io.ReadAll(requestBody)
+	requestBody = bytes.NewBuffer(requestBodyBytes)
 
 	// do request
 	resp, err := adaptor.DoRequest(c, meta, requestBody)
@@ -83,14 +90,38 @@ func RelayTextHelper(c *gin.Context) *model.ErrorWithStatusCode {
 		billing.ReturnPreConsumedQuota(ctx, preConsumedQuota, meta.TokenId)
 		return respErr
 	}
+
 	// post-consume quota
-	go postConsumeQuota(ctx, usage, meta, textRequest, adaptorRatio, preConsumedQuota, groupRatio, systemPromptReset)
+	quotaId := c.GetInt(ctxkey.Id)
+	requestId := c.GetString(ctxkey.RequestId)
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		quota := postConsumeQuota(ctx, usage, meta, textRequest, adaptorRatio, preConsumedQuota, groupRatio, systemPromptReset)
+
+		// also update user request cost
+		if quota != 0 {
+			docu := model.NewUserRequestCost(
+				quotaId,
+				requestId,
+				quota,
+			)
+			if err = docu.Insert(); err != nil {
+				logger.Errorf(ctx, "insert user request cost failed: %+v", err)
+			}
+		}
+	}()
+
 	return nil
 }
 
-func getRequestBody(c *gin.Context, meta *meta.Meta, textRequest *model.GeneralOpenAIRequest, adaptor adaptor.Adaptor) (io.Reader, error) {
-	if !config.EnforceIncludeUsage && meta.APIType == apitype.OpenAI && meta.OriginModelName == meta.ActualModelName && meta.ChannelType != channeltype.Baichuan {
-		// no need to convert request for openai
+func getRequestBody(c *gin.Context, meta *meta.Meta, textRequest *relaymodel.GeneralOpenAIRequest, adaptor adaptor.Adaptor) (io.Reader, error) {
+	if !config.EnforceIncludeUsage &&
+		meta.APIType == apitype.OpenAI &&
+		meta.OriginModelName == meta.ActualModelName &&
+		meta.ChannelType != channeltype.OpenAI && // openai also need to convert request
+		meta.ChannelType != channeltype.Baichuan {
 		return c.Request.Body, nil
 	}
 
