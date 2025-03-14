@@ -272,21 +272,21 @@ var ModelRatio = map[string]float64{
 	"deepseek-r1-distill-qwen-1.5b": 0.001 * KiloRmb,
 	"deepseek-r1-distill-qwen-7b":   0.0005 * KiloRmb,
 	"deepseek-r1-distill-qwen-14b":  0.001 * KiloRmb,
-	"deepseek-r1-distill-qwen-32b":  0.002 * KiloRmb,
-	"deepseek-r1-distill-llama-8b":  0.0005 * KiloRmb,
-	"deepseek-r1-distill-llama-70b": 0.004 * KiloRmb,
-	"SparkDesk":                     1.2858, // ￥0.018 / 1k tokens
-	"SparkDesk-v1.1":                1.2858, // ￥0.018 / 1k tokens
-	"SparkDesk-v2.1":                1.2858, // ￥0.018 / 1k tokens
-	"SparkDesk-v3.1":                1.2858, // ￥0.018 / 1k tokens
-	"SparkDesk-v3.1-128K":           1.2858, // ￥0.018 / 1k tokens
-	"SparkDesk-v3.5":                1.2858, // ￥0.018 / 1k tokens
-	"SparkDesk-v3.5-32K":            1.2858, // ￥0.018 / 1k tokens
-	"SparkDesk-v4.0":                1.2858, // ￥0.018 / 1k tokens
-	"360GPT_S2_V9":                  0.8572, // ¥0.012 / 1k tokens
-	"embedding-bert-512-v1":         0.0715, // ¥0.001 / 1k tokens
-	"embedding_s1_v1":               0.0715, // ¥0.001 / 1k tokens
-	"semantic_similarity_s1_v1":     0.0715, // ¥0.001 / 1k tokens
+	// "deepseek-r1-distill-qwen-32b":  0.002 * KiloRmb,
+	"deepseek-r1-distill-llama-8b": 0.0005 * KiloRmb,
+	// "deepseek-r1-distill-llama-70b": 0.004 * KiloRmb,
+	"SparkDesk":                 1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v1.1":            1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v2.1":            1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v3.1":            1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v3.1-128K":       1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v3.5":            1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v3.5-32K":        1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v4.0":            1.2858, // ￥0.018 / 1k tokens
+	"360GPT_S2_V9":              0.8572, // ¥0.012 / 1k tokens
+	"embedding-bert-512-v1":     0.0715, // ¥0.001 / 1k tokens
+	"embedding_s1_v1":           0.0715, // ¥0.001 / 1k tokens
+	"semantic_similarity_s1_v1": 0.0715, // ¥0.001 / 1k tokens
 	// https://cloud.tencent.com/document/product/1729/97731#e0e6be58-60c8-469f-bdeb-6c264ce3b4d0
 	"hunyuan-turbo":             0.015 * KiloRmb,
 	"hunyuan-large":             0.004 * KiloRmb,
@@ -321,22 +321,30 @@ var ModelRatio = map[string]float64{
 	"mistral-medium-latest": 2.7 * MilliTokensUsd,
 	"mistral-large-latest":  8.0 * MilliTokensUsd,
 	"mistral-embed":         0.1 * MilliTokensUsd,
-	// https://wow.groq.com/#:~:text=inquiries%C2%A0here.-,Model,-Current%20Speed
-	"gemma-7b-it":                           0.07 / 1000 * MilliTokensUsd,
-	"gemma2-9b-it":                          0.20 / 1000 * MilliTokensUsd,
-	"llama-3.1-70b-versatile":               0.59 / 1000 * MilliTokensUsd,
-	"llama-3.1-8b-instant":                  0.05 / 1000 * MilliTokensUsd,
-	"llama-3.2-11b-text-preview":            0.05 / 1000 * MilliTokensUsd,
-	"llama-3.2-11b-vision-preview":          0.05 / 1000 * MilliTokensUsd,
-	"llama-3.2-1b-preview":                  0.05 / 1000 * MilliTokensUsd,
-	"llama-3.2-3b-preview":                  0.05 / 1000 * MilliTokensUsd,
-	"llama-3.2-90b-text-preview":            0.59 / 1000 * MilliTokensUsd,
-	"llama-guard-3-8b":                      0.05 / 1000 * MilliTokensUsd,
-	"llama3-70b-8192":                       0.59 / 1000 * MilliTokensUsd,
-	"llama3-8b-8192":                        0.05 / 1000 * MilliTokensUsd,
-	"llama3-groq-70b-8192-tool-use-preview": 0.89 / 1000 * MilliTokensUsd,
-	"llama3-groq-8b-8192-tool-use-preview":  0.19 / 1000 * MilliTokensUsd,
-	"mixtral-8x7b-32768":                    0.24 / 1000 * MilliTokensUsd,
+	// -------------------------------------
+	// https://groq.com/pricing/
+	// -------------------------------------
+	"gemma2-9b-it":                          0.20 * MilliTokensUsd,
+	"llama-3.1-8b-instant":                  0.05 * MilliTokensUsd,
+	"llama-3.2-11b-text-preview":            0.18 * MilliTokensUsd,
+	"llama-3.2-11b-vision-preview":          0.18 * MilliTokensUsd,
+	"llama-3.2-1b-preview":                  0.04 * MilliTokensUsd,
+	"llama-3.2-3b-preview":                  0.06 * MilliTokensUsd,
+	"llama-3.2-90b-text-preview":            0.90 * MilliTokensUsd,
+	"llama-3.2-90b-vision-preview":          0.90 * MilliTokensUsd,
+	"llama-3.3-70b-versatile":               0.59 * MilliTokensUsd,
+	"llama-guard-3-8b":                      0.20 * MilliTokensUsd,
+	"llama3-70b-8192":                       0.59 * MilliTokensUsd,
+	"llama3-8b-8192":                        0.05 * MilliTokensUsd,
+	"llama3-groq-70b-8192-tool-use-preview": 0.59 * MilliTokensUsd,
+	"llama3-groq-8b-8192-tool-use-preview":  0.05 * MilliTokensUsd,
+	"mixtral-8x7b-32768":                    0.24 * MilliTokensUsd,
+	"whisper-large-v3":                      0.111 * MilliTokensUsd,
+	"whisper-large-v3-turbo":                0.04 * MilliTokensUsd,
+	"distil-whisper-large-v3-en":            0.02 * MilliTokensUsd,
+	"deepseek-r1-distill-qwen-32b":          0.69 * MilliTokensUsd,
+	"deepseek-r1-distill-llama-70b-specdec": 0.75 * MilliTokensUsd,
+	"deepseek-r1-distill-llama-70b":         0.75 * MilliTokensUsd,
 	// https://platform.lingyiwanwu.com/docs#-计费单元
 	"yi-34b-chat-0205": 2.5 * MilliRmb,
 	"yi-34b-chat-200k": 12.0 * MilliRmb,
@@ -651,15 +659,113 @@ var ModelRatio = map[string]float64{
 	"xwin-lm/xwin-lm-70b":                             1.875,
 }
 
+// CompletionRatio is the price ratio between completion tokens and prompt tokens
 var CompletionRatio = map[string]float64{
 	// aws llama3
 	"llama3-8b-8192(33)":  0.0006 / 0.0003,
 	"llama3-70b-8192(33)": 0.0035 / 0.00265,
 	// whisper
-	"whisper-1": 0, // only count input tokens
+	"whisper-1":                  0, // only count input tokens
+	"whisper-large-v3":           0, // only count input tokens
+	"whisper-large-v3-turbo":     0, // only count input tokens
+	"distil-whisper-large-v3-en": 0, // only count input tokens
 	// deepseek
-	"deepseek-chat":     0.28 / 0.14,
+	"deepseek-chat":     1.1 / 0.27,
 	"deepseek-reasoner": 2.19 / 0.55,
+	// openrouter
+	"deepseek/deepseek-chat": 1,
+	"deepseek/deepseek-r1":   1,
+	// -------------------------------------
+	// groq
+	// -------------------------------------
+	"llama-3.3-70b-versatile":               0.79 / 0.59,
+	"llama-3.1-8b-instant":                  0.08 / 0.05,
+	"llama3-70b-8192":                       0.79 / 0.59,
+	"llama3-8b-8192":                        0.08 / 0.05,
+	"gemma2-9b-it":                          1.0,
+	"llama-3.2-11b-text-preview":            1.0,
+	"llama-3.2-11b-vision-preview":          1.0,
+	"llama-3.2-1b-preview":                  1.0,
+	"llama-3.2-3b-preview":                  1.0,
+	"llama-3.2-90b-text-preview":            1.0,
+	"llama-3.2-90b-vision-preview":          1.0,
+	"llama-guard-3-8b":                      1.0,
+	"llama3-groq-70b-8192-tool-use-preview": 0.79 / 0.59,
+	"llama3-groq-8b-8192-tool-use-preview":  0.08 / 0.05,
+	"mixtral-8x7b-32768":                    1.0,
+	"deepseek-r1-distill-qwen-32b":          1,
+	"deepseek-r1-distill-llama-70b-specdec": 0.99 / 0.75,
+	"deepseek-r1-distill-llama-70b":         0.99 / 0.75,
+}
+
+// AudioRatio represents the price ratio between audio tokens and text tokens
+var AudioRatio = map[string]float64{
+	"gpt-4o-audio-preview":                 16,
+	"gpt-4o-audio-preview-2024-12-17":      16,
+	"gpt-4o-audio-preview-2024-10-01":      40,
+	"gpt-4o-mini-audio-preview":            10 / 0.15,
+	"gpt-4o-mini-audio-preview-2024-12-17": 10 / 0.15,
+}
+
+// GetAudioPromptRatio returns the audio prompt ratio for the given model.
+func GetAudioPromptRatio(actualModelName string) float64 {
+	var v float64
+	if ratio, ok := AudioRatio[actualModelName]; ok {
+		v = ratio
+	} else {
+		v = 16
+	}
+
+	return v
+}
+
+// AudioCompletionRatio is the completion ratio for audio models.
+var AudioCompletionRatio = map[string]float64{
+	"whisper-1":                            0,
+	"gpt-4o-audio-preview":                 2,
+	"gpt-4o-audio-preview-2024-12-17":      2,
+	"gpt-4o-audio-preview-2024-10-01":      2,
+	"gpt-4o-mini-audio-preview":            2,
+	"gpt-4o-mini-audio-preview-2024-12-17": 2,
+}
+
+// GetAudioCompletionRatio returns the completion ratio for audio models.
+func GetAudioCompletionRatio(actualModelName string) float64 {
+	var v float64
+	if ratio, ok := AudioCompletionRatio[actualModelName]; ok {
+		v = ratio
+	} else {
+		v = 2
+	}
+
+	return v
+}
+
+// AudioTokensPerSecond is the number of audio tokens per second for each model.
+var AudioPromptTokensPerSecond = map[string]float64{
+	// Whisper API price is $0.0001/sec. One-api's historical ratio is 15,
+	// corresponding to $0.03/kilo_tokens.
+	// After conversion, tokens per second should be 0.0001/0.03*1000 = 3.3333.
+	"whisper-1": 0.0001 / 0.03 * 1000,
+	// gpt-4o-audio series processes 10 tokens per second
+	"gpt-4o-audio-preview":                 10,
+	"gpt-4o-audio-preview-2024-12-17":      10,
+	"gpt-4o-audio-preview-2024-10-01":      10,
+	"gpt-4o-mini-audio-preview":            10,
+	"gpt-4o-mini-audio-preview-2024-12-17": 10,
+}
+
+// GetAudioPromptTokensPerSecond returns the number of audio tokens per second
+// for the given model.
+func GetAudioPromptTokensPerSecond(actualModelName string) float64 {
+	var v float64
+	if tokensPerSecond, ok := AudioPromptTokensPerSecond[actualModelName]; ok {
+		v = tokensPerSecond
+	} else {
+		v = 10
+	}
+
+	return v
 }
 
 var (
@@ -722,23 +828,26 @@ func GetModelRatio(name string, channelType int) float64 {
 	if strings.HasPrefix(name, "command-") && strings.HasSuffix(name, "-internet") {
 		name = strings.TrimSuffix(name, "-internet")
 	}
+
 	model := fmt.Sprintf("%s(%d)", name, channelType)
-	if ratio, ok := ModelRatio[model]; ok {
-		return ratio
+
+	for _, targetName := range []string{model, name} {
+		for _, ratioMap := range []map[string]float64{
+			ModelRatio,
+			DefaultModelRatio,
+			AudioRatio,
+		} {
+			if ratio, ok := ratioMap[targetName]; ok {
+				return ratio
+			}
+		}
 	}
-	if ratio, ok := DefaultModelRatio[model]; ok {
-		return ratio
-	}
-	if ratio, ok := ModelRatio[name]; ok {
-		return ratio
-	}
-	if ratio, ok := DefaultModelRatio[name]; ok {
-		return ratio
-	}
+
 	logger.SysError("model ratio not found: " + name)
 	return 30
 }
 
+// CompletionRatio2JSONString returns the CompletionRatio map as a JSON string.
 func CompletionRatio2JSONString() string {
 	jsonBytes, err := json.Marshal(CompletionRatio)
 	if err != nil {
@@ -747,59 +856,79 @@ func CompletionRatio2JSONString() string {
 	return string(jsonBytes)
 }
 
+// completionRatioLock is a mutex for synchronizing access to the CompletionRatio map.
+var completionRatioLock sync.RWMutex
+
+// UpdateCompletionRatioByJSONString updates the CompletionRatio map with the given JSON string.
 func UpdateCompletionRatioByJSONString(jsonStr string) error {
+	completionRatioLock.Lock()
+	defer completionRatioLock.Unlock()
 	CompletionRatio = make(map[string]float64)
 	return json.Unmarshal([]byte(jsonStr), &CompletionRatio)
 }
 
+// GetCompletionRatio returns the completion ratio for the given model name and channel type.
 func GetCompletionRatio(name string, channelType int) float64 {
+	completionRatioLock.RLock()
+	defer completionRatioLock.RUnlock()
 	if strings.HasPrefix(name, "qwen-") && strings.HasSuffix(name, "-internet") {
 		name = strings.TrimSuffix(name, "-internet")
 	}
 	model := fmt.Sprintf("%s(%d)", name, channelType)
-	if ratio, ok := CompletionRatio[model]; ok {
-		return ratio
+
+	name = strings.TrimPrefix(name, "openai/")
+	for _, targetName := range []string{model, name} {
+		for _, ratioMap := range []map[string]float64{
+			CompletionRatio,
+			DefaultCompletionRatio,
+			AudioCompletionRatio,
+		} {
+			// first try the model name
+			if ratio, ok := ratioMap[targetName]; ok {
+				return ratio
+			}
+
+			// then try the model name without some special prefix
+			normalizedTargetName := strings.TrimPrefix(targetName, "openai/")
+			if ratio, ok := ratioMap[normalizedTargetName]; ok {
+				return ratio
+			}
+		}
 	}
-	if ratio, ok := DefaultCompletionRatio[model]; ok {
-		return ratio
-	}
-	if ratio, ok := CompletionRatio[name]; ok {
-		return ratio
-	}
-	if ratio, ok := DefaultCompletionRatio[name]; ok {
-		return ratio
-	}
-	if strings.HasPrefix(name, "gpt-3.5") {
-		if name == "gpt-3.5-turbo" || strings.HasSuffix(name, "0125") {
+
+	// openai
+	switch {
+	case strings.HasPrefix(name, "gpt-3.5"):
+		switch {
+		case name == "gpt-3.5-turbo" || strings.HasSuffix(name, "0125"):
 			// https://openai.com/blog/new-embedding-models-and-api-updates
 			// Updated GPT-3.5 Turbo model and lower pricing
 			return 3
-		}
-		if strings.HasSuffix(name, "1106") {
+		case strings.HasSuffix(name, "1106"):
 			return 2
+		default:
+			return 4.0 / 3.0
 		}
-		return 4.0 / 3.0
-	}
-	if strings.HasPrefix(name, "gpt-4") {
-		if strings.HasPrefix(name, "gpt-4o") {
+	case name == "chatgpt-4o-latest":
+		return 3
+	case strings.HasPrefix(name, "gpt-4"):
+		switch {
+		case strings.HasPrefix(name, "gpt-4o"):
 			if name == "gpt-4o-2024-05-13" {
 				return 3
 			}
 			return 4
-		}
-		if strings.HasPrefix(name, "gpt-4-turbo") ||
-			strings.HasSuffix(name, "preview") {
+		case strings.HasPrefix(name, "gpt-4-"):
 			return 3
+		default:
+			return 2
 		}
-		return 2
-	}
-	// including o1, o1-preview, o1-mini
-	if strings.HasPrefix(name, "o1") {
+	// including o1/o1-preview/o1-mini
+	case strings.HasPrefix(name, "o1") ||
+		strings.HasPrefix(name, "o3"):
 		return 4
 	}
-	if name == "chatgpt-4o-latest" {
-		return 3
-	}
+
 	if strings.HasPrefix(name, "claude-3") {
 		return 5
 	}
@@ -810,10 +939,7 @@ func GetCompletionRatio(name string, channelType int) float64 {
 		return 3
 	}
 	if strings.HasPrefix(name, "gemini-") {
-		return 3
-	}
-	if strings.HasPrefix(name, "deepseek-") {
-		return 2
+		return 4
 	}
 
 	switch name {
@@ -861,5 +987,6 @@ func GetCompletionRatio(name string, channelType int) float64 {
 		return 1.000 / 0.300 // ≈3.333333
 	}
 
+	logger.SysWarn(fmt.Sprintf("completion ratio not found for model: %s (channel type: %d), using default value 1", name, channelType))
 	return 1
 }
