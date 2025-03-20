@@ -157,7 +157,7 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 		channeltype.Ali,
 		channeltype.Replicate,
 		channeltype.Baidu:
-		finalRequest, err := adaptor.ConvertImageRequest(imageRequest)
+		finalRequest, err := adaptor.ConvertImageRequest(c, imageRequest)
 		if err != nil {
 			return openai.ErrorWrapper(err, "convert_image_request_failed", http.StatusInternalServerError)
 		}

@@ -6,13 +6,13 @@ import (
 	"html/template"
 	"log"
 	"net"
+	"net/http"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-
 	"github.com/songquanpeng/one-api/common/random"
 )
 
@@ -30,6 +30,14 @@ func OpenBrowser(url string) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+// RespondError sends a JSON response with a success status and an error message.
+func RespondError(c *gin.Context, err error) {
+	c.JSON(http.StatusOK, gin.H{
+		"success": false,
+		"message": err.Error(),
+	})
 }
 
 func GetIp() (ip string) {

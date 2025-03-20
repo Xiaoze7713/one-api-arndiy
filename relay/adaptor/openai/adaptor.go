@@ -39,16 +39,24 @@ func (a *Adaptor) Init(meta *meta.Meta) {
 func (a *Adaptor) GetRequestURL(meta *meta.Meta) (string, error) {
 	switch meta.ChannelType {
 	case channeltype.Azure:
+		defaultVersion := meta.Config.APIVersion
+
+		// https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/reasoning?tabs=python#api--feature-support
+		if strings.HasPrefix(meta.ActualModelName, "o1") ||
+			strings.HasPrefix(meta.ActualModelName, "o3") {
+			defaultVersion = "2024-12-01-preview"
+		}
+
 		if meta.Mode == relaymode.ImagesGenerations {
 			// https://learn.microsoft.com/en-us/azure/ai-services/openai/dall-e-quickstart?tabs=dalle3%2Ccommand-line&pivots=rest-api
 			// https://{resource_name}.openai.azure.com/openai/deployments/dall-e-3/images/generations?api-version=2024-03-01-preview
-			fullRequestURL := fmt.Sprintf("%s/openai/deployments/%s/images/generations?api-version=%s", meta.BaseURL, meta.ActualModelName, meta.Config.APIVersion)
+			fullRequestURL := fmt.Sprintf("%s/openai/deployments/%s/images/generations?api-version=%s", meta.BaseURL, meta.ActualModelName, defaultVersion)
 			return fullRequestURL, nil
 		}
 
 		// https://learn.microsoft.com/en-us/azure/cognitive-services/openai/chatgpt-quickstart?pivots=rest-api&tabs=command-line#rest-api
 		requestURL := strings.Split(meta.RequestURLPath, "?")[0]
-		requestURL = fmt.Sprintf("%s?api-version=%s", requestURL, meta.Config.APIVersion)
+		requestURL = fmt.Sprintf("%s?api-version=%s", requestURL, defaultVersion)
 		task := strings.TrimPrefix(requestURL, "/v1/")
 		model_ := meta.ActualModelName
 		model_ = strings.Replace(model_, ".", "", -1)
@@ -160,7 +168,7 @@ func (a *Adaptor) ConvertRequest(c *gin.Context, relayMode int, request *model.G
 	return request, nil
 }
 
-func (a *Adaptor) ConvertImageRequest(request *model.ImageRequest) (any, error) {
+func (a *Adaptor) ConvertImageRequest(_ *gin.Context, request *model.ImageRequest) (any, error) {
 	if request == nil {
 		return nil, errors.New("request is nil")
 	}
@@ -191,6 +199,8 @@ func (a *Adaptor) DoResponse(c *gin.Context,
 		switch meta.Mode {
 		case relaymode.ImagesGenerations:
 			err, _ = ImageHandler(c, resp)
+		case relaymode.ImagesEdits:
+			err, _ = ImagesEditsHandler(c, resp)
 		default:
 			err, usage = Handler(c, resp, meta.PromptTokens, meta.ActualModelName)
 		}
