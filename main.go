@@ -29,6 +29,7 @@ import (
 	"github.com/songquanpeng/one-api/middleware"
 	"github.com/songquanpeng/one-api/model"
 	"github.com/songquanpeng/one-api/monitor"
+	"github.com/songquanpeng/one-api/relay"
 	"github.com/songquanpeng/one-api/relay/adaptor/openai"
 	"github.com/songquanpeng/one-api/router"
 )
@@ -124,6 +125,9 @@ func main() {
 
 	openai.InitTokenEncoders()
 	client.Init()
+
+	// Initialize global pricing manager
+	relay.InitializeGlobalPricing()
 
 	// Initialize i18n
 	if err := i18n.Init(); err != nil {
