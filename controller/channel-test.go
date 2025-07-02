@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	claude "github.com/songquanpeng/one-api/relay/adaptor/aws/claude"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -100,8 +101,14 @@ func testChannel(ctx context.Context, channel *model.Channel, request *relaymode
 	if modelMap != nil && modelMap[modelName] != "" {
 		modelName = modelMap[modelName]
 	}
+	// aws bedrock sp Model meta.Config.AK,
+	arn := claude.FastClaudeModelTransArn(meta.Config.AK, modelName, meta.Config.Region)
 	meta.OriginModelName, meta.ActualModelName = request.Model, modelName
 	request.Model = modelName
+	// for aws tag arn
+	if arn != "" {
+		meta.ActualModelName = arn
+	}
 	convertedRequest, err := adaptor.ConvertRequest(c, relaymode.ChatCompletions, request)
 	if err != nil {
 		return "", err, nil
@@ -112,6 +119,7 @@ func testChannel(ctx context.Context, channel *model.Channel, request *relaymode
 	if err != nil {
 		return "", err, nil
 	}
+	logger.Debugf(c, "body[%s]", string(jsonData))
 	defer func() {
 		logContent := fmt.Sprintf("渠道 %s 测试成功，响应：%s", channel.Name, responseMessage)
 		if err != nil || openaiErr != nil {
